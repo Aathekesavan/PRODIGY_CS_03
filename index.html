@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FortressPass | Password Complexity Checker & Generator</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Assess your password strength in real time. Features advanced entropy calculation, brute-force crack time estimates, common password warnings, and a cryptographic password generator.">
+  <meta name="keywords" content="password strength, password checker, password generator, cyber security, password complexity, entropy checker">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Link CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="glow-bg" id="glowBg"></div>
+  
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <h1>FortressPass</h1>
+      </div>
+      <p class="subtitle">Secure Password Complexity Analyzer &amp; Generator</p>
+    </header>
+
+    <main class="app-grid">
+      <!-- Left Column: Checker -->
+      <section class="card checker-card" aria-labelledby="checker-title">
+        <h2 id="checker-title" class="card-title">
+          <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Analyze Password
+        </h2>
+        
+        <div class="input-wrapper">
+          <input type="password" id="passwordInput" placeholder="Type a password to analyze..." aria-label="Password to analyze">
+          <div class="input-actions">
+            <button id="toggleVisibilityBtn" title="Toggle Visibility" aria-label="Toggle password visibility">
+              <svg id="eyeOpenIcon" class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg id="eyeClosedIcon" class="action-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+            <button id="copyBtn" title="Copy Password" aria-label="Copy password to clipboard">
+              <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Password Strength Indicators -->
+        <div class="strength-meter-container">
+          <div class="strength-bars">
+            <div class="strength-bar" data-index="0"></div>
+            <div class="strength-bar" data-index="1"></div>
+            <div class="strength-bar" data-index="2"></div>
+            <div class="strength-bar" data-index="3"></div>
+            <div class="strength-bar" data-index="4"></div>
+          </div>
+          <div class="strength-info">
+            <span class="strength-label">Strength: <strong id="strengthText">Empty</strong></span>
+            <span id="warningMessage" class="warning-text hidden"></span>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-title">TimeTo Crack (Est.)</span>
+            <span id="crackTime" class="metric-value">Instant</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Entropy</span>
+            <span id="entropyBits" class="metric-value">0 bits</span>
+          </div>
+        </div>
+
+        <!-- Requirements Checklist -->
+        <div class="checklist-container">
+          <h3>Requirements Checklist</h3>
+          <ul class="checklist" id="requirementsList">
+            <li class="checklist-item" id="req-length">
+              <svg class="check-icon error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              At least 8 characters (12+ recommended)
+            </li>
+            <li class="checklist-item" id="req-upper">
+              <svg class="check-icon error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              Uppercase letters (A-Z)
+            </li>
+            <li class="checklist-item" id="req-lower">
+              <svg class="check-icon error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              Lowercase letters (a-z)
+            </li>
+            <li class="checklist-item" id="req-number">
+              <svg class="check-icon error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              Numbers (0-9)
+            </li>
+            <li class="checklist-item" id="req-symbol">
+              <svg class="check-icon error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              Special characters (e.g. !@#$%)
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Right Column: Generator -->
+      <section class="card generator-card" aria-labelledby="generator-title">
+        <h2 id="generator-title" class="card-title">
+          <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <path d="M12 15v3"/>
+          </svg>
+          Generate Strong Password
+        </h2>
+
+        <!-- Length Slider -->
+        <div class="slider-container">
+          <div class="slider-header">
+            <span>Length</span>
+            <span id="lengthVal" class="slider-val">16</span>
+          </div>
+          <input type="range" id="lengthSlider" min="6" max="64" value="16" aria-label="Password Length Selection">
+        </div>
+
+        <!-- Checkboxes Options -->
+        <div class="options-container">
+          <label class="custom-checkbox">
+            <input type="checkbox" id="genUpper" checked>
+            <span class="checkmark"></span>
+            Uppercase Letters (A-Z)
+          </label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="genLower" checked>
+            <span class="checkmark"></span>
+            Lowercase Letters (a-z)
+          </label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="genNumbers" checked>
+            <span class="checkmark"></span>
+            Numbers (0-9)
+          </label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="genSymbols" checked>
+            <span class="checkmark"></span>
+            Special Symbols (!@#$...)
+          </label>
+        </div>
+
+        <button id="generateBtn" class="primary-btn">
+          Generate Secure Password
+          <svg class="btn-icon animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+        </button>
+
+        <!-- Dynamic suggestions -->
+        <div class="tips-box">
+          <h4>💡 Cyber Tip</h4>
+          <p id="tipText">Use a length of at least 12 characters, mixing letters, numbers, and symbols to maximize security against brute force attacks.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p class="privacy-note">Secure password checker executed fully client-side. No password data is ever sent to any server.</p>
+      
+      <div class="footer-meta">
+        <div class="internship-info">
+          <span class="internship-text">| Cyber Security Internship | <strong class="company-name">Prodigy InfoTech</strong></span>
+        </div>
+
+        <div class="developer-info">
+          <span>Developed by <strong class="dev-name">Aathekesavan R</strong></span>
+          <span class="divider">|</span>
+          <div class="social-links">
+            <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub Profile">
+              <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+              GitHub
+            </a>
+            <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn Profile">
+              <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+              </svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Script File -->
+  <script src="script.js"></script>
+</body>
+</html>

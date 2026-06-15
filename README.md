@@ -43,15 +43,18 @@ The platform analyzes password strength in real time, identifies security weakne
 
 ### Main Dashboard
 
-(Add Dashboard Screenshot)
+<img width="1898" height="927" alt="image" src="https://github.com/user-attachments/assets/7269cd63-4c1c-4312-919e-bd8bcb166b1b" />
+
 
 ### Password Analysis
 
-(Add Analysis Screenshot)
+<img width="1897" height="925" alt="Task 3" src="https://github.com/user-attachments/assets/7c72d441-99ea-4366-b8d1-fbc067086053" />
+
 
 ### Security Recommendations
 
-(Add Recommendation Screenshot)
+<img width="1901" height="927" alt="image" src="https://github.com/user-attachments/assets/15a4369c-e2bb-4f81-b5e6-546345cc7f87" />
+
 
 ---
 
@@ -149,8 +152,6 @@ Through this project, I gained practical experience in:
 Cyber Security Intern
 
 GitHub: https://github.com/Aathekesavan
-
-LinkedIn: (Add Your LinkedIn Profile URL)
 
 ---
 
